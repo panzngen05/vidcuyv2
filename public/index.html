@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vidcuy - Smooth Neon Hosting</title>
+  <meta name="description" content="Vidcuy: Free video hosting with smooth, flickering neon blue aesthetic and progress bar.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- BASE & VARIABLES --- */
+    :root {
+      --bg-dark: #0a0f1f;
+      --text-dark: #e8e8f0;
+      --text-muted: #a0a0b0;
+      --primary-neon: #00bfff;
+      --primary-neon-darker: #009acd;
+      --navbar-bg: rgba(5, 10, 25, 0.85);
+      --footer-bg: #030610;
+      --shadow-color-neon: rgba(0, 191, 255, 0.7);
+      --shadow-color-neon-flicker: rgba(0, 191, 255, 0.9);
+      --shadow-color-dark: rgba(0, 0, 0, 0.6);
+      --border-color: #2a3a59;
+      --border-color-neon: rgba(0, 191, 255, 0.5);
+      --progress-bar-bg: rgba(42, 58, 89, 0.7);
+
+      --font-main: 'Roboto', sans-serif;
+      --transition-speed: 0.3s; /* Default smooth transition speed */
+      --transition-speed-fast: 0.15s; /* Faster for clicks */
+      --timing-function-smooth: ease-out; /* Smoother easing */
+    }
+
+    html {
+      font-family: var(--font-main); scroll-behavior: smooth; box-sizing: border-box;
+    }
+    *, *:before, *:after { box-sizing: inherit; }
+
+    /* --- THEME --- */
+    body {
+      margin: 0; background-color: var(--bg-dark); color: var(--text-dark);
+      line-height: 1.6; padding-bottom: 80px; font-weight: 400;
+    }
+    a {
+      color: var(--primary-neon); text-decoration: none;
+      /* Apply smooth transition to links */
+      transition: color var(--transition-speed) var(--timing-function-smooth),
+                  filter var(--transition-speed) var(--timing-function-smooth);
+    }
+    a:hover { color: var(--primary-neon); filter: brightness(1.3); }
+
+    /* --- NAVBAR --- */
+    .nav-outer {
+      display: flex; align-items: center; justify-content: center; background-color: var(--navbar-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); min-height: 65px;
+      padding: 0 20px; position: sticky; top: 0; z-index: 1000;
+      /* Smoother transition for background/border if they ever change */
+      transition: background-color var(--transition-speed) var(--timing-function-smooth),
+                  border-color var(--transition-speed) var(--timing-function-smooth);
+      border-bottom: 1px solid var(--border-color-neon);
+      box-shadow: 0 0 15px var(--shadow-color-neon), 0 3px 10px var(--shadow-color-dark);
+      animation: flicker-border-shadow 3s infinite alternate;
+    }
+    .nav-inner { width: 100%; max-width: 1200px; display: flex; align-items: center; }
+    .logo-text {
+      font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: var(--primary-neon);
+      margin-right: 30px;
+      /* Smoother transform transition */
+      transition: transform var(--transition-speed) var(--timing-function-smooth);
+      animation: flicker-text-glow 2.5s infinite alternate;
+    }
+    .logo-text a { color: inherit; text-decoration: none; }
+    .logo-text:hover { transform: scale(1.03); }
+    .nav-menu { display: flex; align-items: center; margin-left: auto; gap: 25px; }
+    .upload-button-nav {
+      background: linear-gradient(45deg, var(--primary-neon), var(--primary-neon-darker));
+      border: none; border-radius: 6px; font-size: 16px; font-weight: 500;
+      padding: 11px 20px; color: #030610; cursor: pointer;
+      /* Smoother transitions */
+      transition: transform var(--transition-speed-fast) var(--timing-function-smooth),
+                  box-shadow var(--transition-speed) var(--timing-function-smooth),
+                  filter var(--transition-speed) var(--timing-function-smooth);
+      text-decoration: none; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 8px var(--shadow-color-neon), 0 0 15px var(--shadow-color-neon) inset;
+    }
+    .upload-button-nav i { margin-right: 8px; }
+    .upload-button-nav:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 12px var(--shadow-color-neon), 0 0 25px var(--shadow-color-neon) inset, 0 4px 15px rgba(0,0,0,0.4);
+      filter: brightness(1.1);
+    }
+    .legal-links { display: flex; gap: 25px; }
+    .legal-links a {
+      color: var(--text-muted); font-size: 15px; font-weight: 400; position: relative;
+      padding-bottom: 4px;
+      /* Smoother color transition */
+      transition: color var(--transition-speed) var(--timing-function-smooth);
+    }
+    .legal-links a::after {
+        content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%;
+        transform: translateX(-50%); background-color: var(--primary-neon);
+        /* Smoother width transition */
+        transition: width var(--transition-speed) var(--timing-function-smooth);
+        box-shadow: 0 0 5px var(--shadow-color-neon); opacity: 0.7;
+    }
+    .legal-links a:hover { color: var(--text-dark); filter: none; }
+    .legal-links a:hover::after { width: 100%; }
+
+    /* --- MOBILE MENU --- */
+    .hamburger {
+      display: none; font-size: 26px; cursor: pointer; color: var(--primary-neon);
+      /* Smoother transitions */
+      transition: transform var(--transition-speed-fast) var(--timing-function-smooth),
+                  color var(--transition-speed) var(--timing-function-smooth),
+                  text-shadow var(--transition-speed) var(--timing-function-smooth);
+      text-shadow: 0 0 6px var(--shadow-color-neon); z-index: 1001;
+    }
+    .hamburger:hover { transform: scale(1.15); color: #fff; text-shadow: 0 0 10px var(--shadow-color-neon); }
+    #mobile-menu {
+      display: none; flex-direction: column; background-color: var(--navbar-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      position: absolute; top: 65px; left: 0; width: 100%; border-top: 1px solid var(--border-color);
+      padding: 10px 0; z-index: 999; box-shadow: 0 8px 20px var(--shadow-color-dark);
+      opacity: 0; transform: translateY(-15px);
+      /* Smoother appearance transition */
+      transition: opacity var(--transition-speed) var(--timing-function-smooth),
+                  transform var(--transition-speed) var(--timing-function-smooth);
+    }
+    #mobile-menu.active { display: flex; opacity: 1; transform: translateY(0); }
+    #mobile-menu a {
+      padding: 15px 25px; font-size: 17px; font-weight: 500; color: var(--text-dark);
+      text-decoration: none;
+      /* Smoother background/color transition */
+      transition: background-color var(--transition-speed-fast) var(--timing-function-smooth),
+                  color var(--transition-speed-fast) var(--timing-function-smooth);
+      border-bottom: 1px solid rgba(42, 58, 89, 0.5);
+    }
+    #mobile-menu a:last-child { border-bottom: none; }
+    #mobile-menu a:hover { background-color: rgba(0, 191, 255, 0.1); color: var(--primary-neon); filter: brightness(1.2); }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      .nav-menu { gap: 20px; }
+      .legal-links, .upload-button-nav { display: none; }
+      .hamburger { display: block; margin-left: auto; }
+      .nav-outer { animation-duration: 3.5s; }
+      .logo-text { animation-duration: 3s; }
+    }
+     @media (max-width: 480px) {
+        .logo-text { font-size: 24px; margin-right: 15px; }
+        .nav-outer { padding: 0 15px; }
+        .hamburger { font-size: 24px; }
+     }
+
+    /* --- MAIN CONTENT --- */
+    .body { padding: 50px 20px; max-width: 1100px; margin: 0 auto; }
+    .main-area {
+      padding-top: 60px; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+    .headline {
+      font-weight: 700; font-size: clamp(2.2rem, 6vw, 4rem); margin-bottom: 25px;
+      color: var(--primary-neon);
+      text-shadow: 0 0 10px var(--shadow-color-neon), 0 0 20px var(--shadow-color-neon);
+      animation: pulse-glow 4s infinite alternate ease-in-out;
+    }
+    .description {
+      font-size: clamp(1.1rem, 3vw, 1.35rem); margin-bottom: 45px; max-width: 700px;
+      color: var(--text-muted); line-height: 1.7; font-weight: 300;
+    }
+
+    /* Upload Status Area */
+    .upload-status {
+       display: none; width: 100%; max-width: 500px; margin-top: 20px;
+    }
+    .headline-uploading {
+      font-weight: 500; font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--primary-neon); text-shadow: 0 0 10px var(--shadow-color-neon);
+      margin-bottom: 25px;
+    }
+    .progress-bar-container {
+        width: 100%; height: 12px; background-color: var(--progress-bar-bg);
+        border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.4); margin-bottom: 15px;
+    }
+    .progress-bar {
+        width: 0%; height: 100%;
+        background: linear-gradient(90deg, var(--primary-neon-darker), var(--primary-neon));
+        border-radius: 6px;
+        /* Smoother width transition */
+        transition: width var(--transition-speed) var(--timing-function-smooth);
+        box-shadow: 0 0 8px var(--shadow-color-neon);
+    }
+    #processing-percentage {
+        display: none; font-size: clamp(0.9rem, 2vw, 1.1rem); color: var(--text-muted);
+        margin-top: 10px; font-weight: 400;
+    }
+     #processing-percentage span { color: var(--primary-neon); font-weight: 500; }
+
+    /* Main Upload Button */
+    .upload-button {
+      min-width: 180px; padding: 18px 35px;
+      background: linear-gradient(45deg, var(--primary-neon), var(--primary-neon-darker));
+      border: none; border-radius: 8px; font-weight: 700; font-size: 20px;
+      margin: 30px auto 0; display: inline-flex; align-items: center; justify-content: center;
+      color: #030610; cursor: pointer;
+       /* Using the bouncy bezier still, change timing-function if needed */
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                  box-shadow var(--transition-speed) var(--timing-function-smooth),
+                  filter var(--transition-speed) var(--timing-function-smooth);
+      box-shadow: 0 0 12px var(--shadow-color-neon), 0 0 25px var(--shadow-color-neon) inset, 0 5px 10px rgba(0,0,0,0.3);
+    }
+    .upload-button i { margin-right: 10px; font-size: 1.1em; }
+    .upload-button:hover {
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 0 18px var(--shadow-color-neon), 0 0 40px var(--shadow-color-neon) inset, 0 8px 20px rgba(0,0,0,0.5);
+      filter: brightness(1.15);
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 20px 0; text-align: center; font-size: 14px; color: var(--text-muted);
+      position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--footer-bg);
+      z-index: 998; border-top: 1px solid var(--border-color-neon);
+      box-shadow: 0 0 10px var(--shadow-color-neon);
+      animation: flicker-border-shadow 3.5s infinite alternate-reverse;
+    }
+    footer p { margin: 0; font-weight: 300; }
+
+    /* --- ANIMATIONS --- */
+    /* Smoother Click Animation */
+    .animate-click {
+      transform: scale(0.96) !important;
+      filter: brightness(0.9) !important;
+      /* Adjusted transition for smoothness */
+      transition: transform var(--transition-speed-fast) var(--timing-function-smooth),
+                  filter var(--transition-speed-fast) var(--timing-function-smooth) !important;
+    }
+    @keyframes pulse-glow { /* Headline */
+        0%, 100% { text-shadow: 0 0 8px var(--shadow-color-neon), 0 0 15px var(--shadow-color-neon); opacity: 0.9; }
+        50% { text-shadow: 0 0 12px var(--shadow-color-neon), 0 0 25px var(--shadow-color-neon); opacity: 1; }
+    }
+    @keyframes flicker-text-glow { /* Logo */
+      0%, 100% { text-shadow: 0 0 7px var(--shadow-color-neon), 0 0 12px var(--shadow-color-neon), 0 0 2px var(--primary-neon); opacity: 1; }
+      10%, 30%, 60%, 90% { text-shadow: 0 0 5px var(--shadow-color-neon), 0 0 8px var(--shadow-color-neon); opacity: 0.85; }
+      20%, 70% { text-shadow: 0 0 9px var(--shadow-color-neon-flicker), 0 0 16px var(--shadow-color-neon-flicker), 0 0 3px var(--primary-neon); opacity: 1; }
+      40%, 80% { text-shadow: none; opacity: 0.7; }
+      50% { text-shadow: 0 0 7px var(--shadow-color-neon), 0 0 12px var(--shadow-color-neon); opacity: 1; }
+    }
+    @keyframes flicker-border-shadow { /* Nav/Footer */
+       0%, 100% { border-color: var(--border-color-neon); box-shadow: 0 0 10px var(--shadow-color-neon), 0 3px 8px var(--shadow-color-dark); opacity: 1; }
+       15%, 45%, 90% { border-color: rgba(0, 191, 255, 0.4); box-shadow: 0 0 6px rgba(0, 191, 255, 0.4), 0 2px 6px var(--shadow-color-dark); opacity: 0.8; }
+       30%, 75% { border-color: var(--border-color-neon); box-shadow: 0 0 18px var(--shadow-color-neon-flicker), 0 4px 12px var(--shadow-color-dark); opacity: 1; }
+       60% { border-color: var(--border-color); box-shadow: 0 2px 5px var(--shadow-color-dark); opacity: 0.6; }
+    }
+
+    /* --- UTILITY --- */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="nav-outer">
+    <div class="nav-inner">
+      <div class="logo-text"><a href="/">Vidcuy</a></div>
+      <div class="nav-menu">
+         <a href="/" class="upload-button-nav button-click"><i class="fas fa-upload"></i>Upload</a>
+         <div class="legal-links">
+          <a href="/">Privacy Policy</a> <a href="/">Terms</a> <a href="#">Abuse</a>
+        </div>
+      </div>
+      <div class="hamburger button-click" onclick="toggleMobileNavbar()"><i class="fa fa-bars"></i></div>
+    </div>
+  </div>
+
+  <div id="mobile-menu">
+    <a href="/">Upload</a> <a href="/">Privacy Policy</a> <a href="/">Terms of Service</a> <a href="#">Abuse</a>
+  </div>
+
+  <div class="body">
+    <form action="/api/upload" method="POST" id="form" style="display: none;">
+      <input name="file" type="file" id="selectedFile" class="clickListenerFile" accept="video/*" />
+    </form>
+
+    <div class="main-area">
+      <div class="headline">Vidcuy Video Hosting</div>
+      <div class="description">Free, simple, and dazzlingly fast. Just select or drop your video file.</div>
+
+      <div class="upload-status">
+          <div class="headline-uploading">Uploading...</div>
+          <div class="progress-bar-container">
+              <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div id="processing-percentage"></div>
+      </div>
+
+      <div class="upload-button button-click" onclick="handleClick();">
+        <i class="fas fa-folder-open"></i> Browse File
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© PanzNgen. All rights reserved.</p>
+  </footer>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer">
+  </script>
+
+  <script>
+    function toggleMobileNavbar() {
+      document.getElementById("mobile-menu").classList.toggle("active");
+    }
+
+    // Click animation (JS part remains the same, CSS handles smoothness)
+    document.querySelectorAll('.button-click').forEach(function(button) {
+      button.addEventListener('mousedown', function() { this.classList.add('animate-click'); });
+      const removeAnimation = () => { setTimeout(() => button.classList.remove('animate-click'), 100); }; // Duration can be slightly less than CSS transition
+      button.addEventListener('mouseup', removeAnimation);
+      button.addEventListener('mouseleave', () => { if (button.classList.contains('animate-click')) { button.classList.remove('animate-click'); } });
+    });
+
+    function handleClick() {
+      document.getElementById('selectedFile').click();
+    }
+
+    // Upload simulation logic (remains the same)
+    const form = document.getElementById('form');
+    const selectedFile = document.getElementById('selectedFile');
+    const originalHeadline = document.querySelector('.headline');
+    const originalDescription = document.querySelector('.description');
+    const uploadButton = document.querySelector('.upload-button');
+    const uploadStatusArea = document.querySelector('.upload-status');
+    const headlineUploading = uploadStatusArea.querySelector('.headline-uploading');
+    const progressBar = document.getElementById('progressBar');
+    const processingPercentageText = document.getElementById('processing-percentage');
+
+    selectedFile.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            originalHeadline.style.display = 'none';
+            originalDescription.style.display = 'none';
+            uploadButton.style.visibility = 'hidden';
+            headlineUploading.textContent = "Uploading...";
+            processingPercentageText.style.display = 'none';
+            uploadStatusArea.style.display = 'block';
+            progressBar.style.width = '0%';
+
+            let uploadProgress = 0;
+            const uploadInterval = setInterval(() => {
+                uploadProgress += Math.floor(Math.random() * 15) + 5;
+                uploadProgress = Math.min(uploadProgress, 100);
+                progressBar.style.width = uploadProgress + '%';
+
+                if (uploadProgress >= 100) {
+                    clearInterval(uploadInterval);
+                    headlineUploading.textContent = "Processing...";
+                    processingPercentageText.style.display = 'block';
+                    let processingProgress = 0;
+                    processingPercentageText.innerHTML = `<span>0%</span> Processed`;
+
+                    const processingInterval = setInterval(() => {
+                        processingProgress += Math.floor(Math.random() * 10) + 5;
+                        processingProgress = Math.min(processingProgress, 100);
+                        processingPercentageText.innerHTML = `<span>${processingProgress}%</span> Processed`;
+
+                        if (processingProgress >= 100) {
+                            clearInterval(processingInterval);
+                            headlineUploading.textContent = "Complete!";
+                            setTimeout(() => {
+                                 originalHeadline.style.display = 'block';
+                                 originalDescription.style.display = 'block';
+                                 uploadButton.style.visibility = 'visible';
+                                 uploadStatusArea.style.display = 'none';
+                                 form.reset();
+                            }, 1500);
+                        }
+                    }, 250);
+                }
+            }, 200);
+        }
+    });
+  </script>
+</body>
+</html>
