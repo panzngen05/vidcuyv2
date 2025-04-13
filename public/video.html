@@ -162,15 +162,30 @@
       animation: pulse-video-glow 5s infinite alternate ease-in-out;
     }
     .video video {
-      display: block; width: 100%; max-height: calc(100vh - 65px - 61px - 50px);
+      display: block; width: 100%; max-height: calc(100vh - 65px - 61px - 50px); /* Adjust max height */
       min-height: 300px; border: none; border-radius: 10px; outline: none;
+      background-color: #000; /* Fallback background */
     }
+    /* Styling for video controls (browser-specific might be needed) */
     video::-webkit-media-controls-panel { background-color: rgba(10, 15, 31, 0.8); border-radius: 0 0 10px 10px; }
     video::-webkit-media-controls-play-button:hover,
     video::-webkit-media-controls-fullscreen-button:hover { filter: brightness(1.5); }
     video::-webkit-media-controls-timeline { background-color: rgba(42, 58, 89, 0.6); border-radius: 3px; height: 6px; margin: 0 10px; }
     video::-webkit-media-controls-current-time-display,
     video::-webkit-media-controls-time-remaining-display { color: var(--text-dark); text-shadow: 0 0 2px rgba(0,0,0,0.8); }
+
+    /* Info Text Style */
+     #video-info {
+         margin-top: 20px; color: var(--text-muted); font-size: 0.95rem;
+     }
+     #video-info span { color: var(--primary-neon); font-weight: 500; }
+
+    /* Error Message Style */
+     .error-message {
+         color: #ff4d4d; font-size: 1.2em; text-align: center; padding: 60px 20px;
+     }
+     .error-message i { margin-right: 10px; }
+
 
     /* --- FOOTER --- */
     footer {
@@ -183,11 +198,9 @@
     footer p { margin: 0; font-weight: 300; }
 
     /* --- ANIMATIONS --- */
-     /* Smoother Click Animation */
     .animate-click {
       transform: scale(0.96) !important;
       filter: brightness(0.9) !important;
-      /* Adjusted transition for smoothness */
       transition: transform var(--transition-speed-fast) var(--timing-function-smooth),
                   filter var(--transition-speed-fast) var(--timing-function-smooth) !important;
     }
@@ -217,29 +230,28 @@
 <body>
   <div class="nav-outer">
     <div class="nav-inner">
-      <div class="logo-text"><a href="/">Vidcuy</a></div>
-      <div class="nav-menu">
-         <a href="/" class="upload-button-nav button-click"><i class="fas fa-upload"></i>Upload</a>
-         <div class="legal-links">
-          <a href="/">Privacy Policy</a> <a href="/">Terms</a> <a href="#">Abuse</a>
-        </div>
+      <div class="logo-text"><a href="/">Vidcuy</a></div> <div class="nav-menu">
+         <a href="/" class="upload-button-nav button-click"><i class="fas fa-upload"></i>Upload</a> <div class="legal-links">
+          <a href="#">Privacy Policy</a> <a href="#">Terms</a> <a href="#">Abuse</a> </div>
       </div>
       <div class="hamburger button-click" onclick="toggleMobileNavbar()"><i class="fa fa-bars"></i></div>
     </div>
   </div>
 
   <div id="mobile-menu">
-    <a href="/">Upload</a> <a href="/">Privacy Policy</a> <a href="/">Terms of Service</a> <a href="#">Abuse</a>
+    <a href="/">Upload</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Abuse</a>
   </div>
 
   <div class="body">
     <div class="main-area">
       <div class="video">
-        <video controls id="previewVideo" preload="metadata">
-          Your browser does not support the video tag.
+        <video controls id="previewVideo" preload="metadata" controlsList="nodownload"> Your browser does not support the video tag.
         </video>
       </div>
-       <div id="video-info" style="margin-top: 20px; color: var(--text-muted);"></div>
+       <div id="video-info">Loading video info...</div>
     </div>
   </div>
 
@@ -253,42 +265,81 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer">
   </script>
-  <script src="./index.js"></script>
-  
+
   <script>
+    // Fungsi dasar UI (Mobile Menu, Animasi Klik)
     function toggleMobileNavbar() {
       document.getElementById("mobile-menu").classList.toggle("active");
     }
 
-    // Click animation (JS part remains the same, CSS handles smoothness)
     document.querySelectorAll('.button-click').forEach(function(button) {
        button.addEventListener('mousedown', function() { this.classList.add('animate-click'); });
-      const removeAnimation = () => { setTimeout(() => button.classList.remove('animate-click'), 100); }; // Duration can be slightly less than CSS transition
+      const removeAnimation = () => { setTimeout(() => button.classList.remove('animate-click'), 100); };
       button.addEventListener('mouseup', removeAnimation);
       button.addEventListener('mouseleave', () => { if (button.classList.contains('animate-click')) { button.classList.remove('animate-click'); } });
     });
 
-    // Video loading logic (remains the same)
+    // Fungsi untuk mendapatkan ID video dari URL
     function getVideoIdFromUrl() {
-      return new URLSearchParams(window.location.search).get('id');
+      // Ambil query string dari URL
+      const urlParams = new URLSearchParams(window.location.search);
+      // Kembalikan nilai parameter 'id'
+      return urlParams.get('id');
     }
+
+    // Fungsi untuk memuat dan menampilkan video
     function loadVideo(videoId) {
       var videoPlayer = document.getElementById("previewVideo");
-      var videoInfo = document.getElementById("video-info");
+      var videoInfoContainer = document.getElementById("video-info");
+
+      // Pastikan elemen pemutar video dan info ada
+      if (!videoPlayer || !videoInfoContainer) {
+          console.error("Video player or info container element not found!");
+          if(videoInfoContainer) {
+              videoInfoContainer.innerHTML = `<p class='error-message'><i class="fas fa-exclamation-triangle"></i>Error: Player element missing.</p>`;
+          }
+          return;
+      }
+
+      // Cek apakah videoId valid (tidak null atau string kosong)
       if (videoId) {
-        videoPlayer.src = "/file/" + videoId + ".mp4";
-        videoPlayer.load();
-        console.log("Loading video:", videoPlayer.src);
-        if(videoInfo) { videoInfo.innerHTML = `Now Playing: Video ID <span style="color: var(--primary-neon);">${videoId}</span>`; }
+        // Bentuk URL sumber video - PASTIKAN PATH INI BENAR SESUAI SERVER ANDA
+        const videoSourceUrl = "/file/" + videoId + ".mp4";
+        console.log("Attempting to load video from:", videoSourceUrl);
+
+        videoPlayer.src = videoSourceUrl;
+        // Tambahkan event listener untuk error saat memuat video
+        videoPlayer.onerror = function() {
+            console.error("Error loading video source:", videoSourceUrl);
+            videoInfoContainer.innerHTML = `<p class='error-message'><i class="fas fa-exclamation-triangle"></i>Error: Could not load video file. It might be missing or the ID is incorrect.</p>`;
+            // Sembunyikan kontrol video jika error
+             videoPlayer.style.display = 'none';
+        };
+         // Tambahkan event listener untuk sukses memuat metadata (opsional tapi bagus)
+        videoPlayer.onloadedmetadata = function() {
+            console.log("Video metadata loaded successfully.");
+             videoInfoContainer.innerHTML = `Now Playing: Video ID <span>${videoId}</span>`;
+        };
+
+        videoPlayer.load(); // Mulai memuat video
+
       } else {
+          // Jika tidak ada ID video di URL
           console.error("No video ID found in URL.");
+          // Ganti seluruh area utama dengan pesan error
           var mainArea = document.querySelector('.main-area');
           if (mainArea) {
-              mainArea.innerHTML = `<p style='color: #ff4d4d; font-size: 1.2em; text-align: center; padding: 60px 20px;'><i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>Error: Video not found. Please check the URL.</p>`;
+              mainArea.innerHTML = `<p class='error-message'><i class="fas fa-exclamation-triangle"></i>Error: Video ID not specified in the URL.</p>`;
           }
       }
     }
-    $(document).ready(function() { loadVideo(getVideoIdFromUrl()); });
+
+    // Jalankan fungsi loadVideo setelah halaman (DOM) sepenuhnya dimuat
+    $(document).ready(function() {
+        const videoId = getVideoIdFromUrl(); // Dapatkan ID video
+        loadVideo(videoId); // Muat video
+    });
   </script>
-</body>
+
+  </body>
 </html>
