@@ -1,97 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Videy - free and simple video hosting</title>
-    <meta name="description" content="Videy is the platform for free and simple video hosting.">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="./style.css">
+  <meta charset="UTF-8">
+  <title>Vidcuy - Smooth Neon Hosting</title>
+  <meta name="description" content="Vidcuy: Free, simple video hosting with a smooth, flickering neon blue aesthetic.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+    crossorigin="anonymous" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="./style.css">
+
 </head>
 <body>
-    <div class="nav-outer">
-        <div class="nav-inner">
-            <div class="logo-text">
-                <a href="https://sazumi.moe/">videy</a>
-            </div>
-            <a href="/">
-                <div class="upload-button-nav">
-                    Upload
-                </div>
-            </a>
-            <div class="legal">
-                <div class="legal-menu">
-                    <a href="javascript:void(0);" class="icon" onclick="toggleMobileNavbar()">
-                        <i class="fa fa-bars"></i>
-                    </a>
-                </div>
-                <div class="legal-item">
-                    <a href="/">
-                        Privacy Policy
-                    </a>
-                </div>
-                <div class="legal-item">
-                    <a href="/">
-                        Terms of Service
-                    </a>
-                </div>
-                <div class="legal-item">
-                    <a>
-                        Abuse
-                    </a>
-                </div>
-            </div>
+  <div class="nav-outer">
+    <div class="nav-inner">
+      <div class="logo-text">
+        <a href="#">Vidcuy</a>
+      </div>
+
+      <div class="nav-menu">
+        <a href="/" class="upload-button-nav button-click">
+           <i class="fas fa-upload"></i> Upload </a>
+        <div class="legal-links">
+          <a href="/">Privacy Policy</a>
+          <a href="/">Terms</a> <a href="#">Abuse</a>
         </div>
+      </div>
+
+      <div class="hamburger button-click" onclick="toggleMobileNavbar()">
+        <i class="fa fa-bars"></i>
+      </div>
     </div>
-    <div id="mobile-menu">
-        <a href="/">
-            Privacy Policy
-        </a>
-        <a href="/">
-            Terms of Service
-        </a>
-        <a>
-            Abuse
-        </a>
+  </div>
+
+  <div id="mobile-menu"> <a href="/">Upload</a>
+    <a href="/">Privacy Policy</a>
+    <a href="/">Terms of Service</a>
+    <a href="#">Abuse</a>
     </div>
-    <div class="body">
-        <form action="/api/upload" method="POST" id="form">
-            <input name="file" type="file" id="selectedFile" class="clickListenerFile" accept="video/*" style="display: none;" />
-        </form>
-        <div class="main-area">
-            <div class="headline">
-                Free and simple video hosting
-            </div>
-            <div class="description">
-                Just select or drop a file.
-            </div>
-            <div class="headline-uploading">
-                Uploading...
-            </div>
-            <div class="description-uploading">
-                0% complete.
-            </div>
-            <div class="upload-button" onclick="handleClick();">
-                Browse
-            </div>
-        </div>
+
+  <div class="body">
+    <form action="/api/upload" method="POST" id="form" style="display: none;">
+      <input
+        name="file"
+        type="file"
+        id="selectedFile"
+        class="clickListenerFile"
+        accept="video/*" />
+    </form>
+
+    <div class="main-area">
+      <div class="headline">Neon Video Hosting</div> <div class="description">Free, simple, and dazzlingly fast. Just select or drop a file.</div> <div class="headline-uploading" style="display: none;">Uploading...</div>
+      <div class="description-uploading" style="display: none;">0% complete.</div>
+      <div class="upload-button button-click" onclick="handleClick();">
+         <i class="fas fa-folder-open"></i> Browse </div>
     </div>
-    <footer>
-        <p>© Sazumi Cloud. All rights reserved.</p>
-    </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-    <script src="./index.js"></script>
-    <script>
-        function toggleMobileNavbar() {
-            var x = document.getElementById("mobile-menu");
-            if (x.style.display === "flex") {
-                x.style.display = "none";
-            } else {
-                x.style.display = "flex";
-            }
-        }
-    </script>
+  </div>
+
+  <script type='text/javascript' src='//pl26193600.effectiveratecpm.com/73/2a/7e/732a7e5866abae1b2d6818c1d3c80a2b.js'></script>
+
+  <footer>
+    <p>© PanzNgen. All rights reserved.</p>
+  </footer>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous">
+  </script>
+
+  <script src="./index.js"></script>
+
+  <script>
+    // Toggle mobile menu (Kept as requested)
+    function toggleMobileNavbar() {
+      var x = document.getElementById("mobile-menu");
+      x.classList.toggle("active"); // Use class toggle for CSS animation
+    }
+
+    // Toggle dark/light mode function REMOVED
+
+    // Animasi klik (Kept as requested, CSS handles smoothness)
+    document.querySelectorAll('.button-click').forEach(function(button) {
+       button.addEventListener('mousedown', function() {
+         this.classList.add('animate-click');
+       });
+       const removeAnimation = () => {
+           setTimeout(() => button.classList.remove('animate-click'), 150);
+       };
+       button.addEventListener('mouseup', removeAnimation);
+       button.addEventListener('mouseleave', () => {
+           if (button.classList.contains('animate-click')) {
+               button.classList.remove('animate-click');
+           }
+       });
+    });
+
+    // Fungsi untuk memicu klik file input (Kept as is)
+    function handleClick() {
+      document.getElementById('selectedFile').click();
+    }
+
+    // Note: Upload progress simulation logic is removed from inline script.
+    // It's assumed that ./index.js will handle the upload process
+    // and interact with the DOM elements (like .headline-uploading) if needed.
+
+  </script>
 </body>
 </html>
